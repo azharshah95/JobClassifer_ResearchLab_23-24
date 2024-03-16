@@ -93,7 +93,8 @@ def create_table(db_connection):
                             angebot_inhalt TEXT NULL,
                             angebot_abschlussbezeichnung TEXT NULL,
                             angebot_foerderung TEXT NULL,
-                            angebot_zielgruppe TEXT NULL
+                            angebot_zielgruppe TEXT NULL,
+                            bildungsart_bezeichnung TEXT NULL
                         )
                    ''')
     db_connection.commit()
@@ -109,15 +110,17 @@ def insert_data_into_db(data, db_connection):
                     angebot_inhalt,
                     angebot_abschlussbezeichnung,
                     angebot_foerderung,
-                    angebot_zielgruppe
-            ) VALUES (?, ?, ?, ?, ?, ?)
+                    angebot_zielgruppe,
+                    bildungsart_bezeichnung
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
         ''', (
             angebot["id"],
             stripHtmlTagsFromString(angebot["titel"]),
             stripHtmlTagsFromString(angebot["inhalt"]),
             stripHtmlTagsFromString(angebot["abschlussbezeichnung"]),
             stripHtmlTagsFromString(angebot["foerderung"]),
-            stripHtmlTagsFromString(angebot["zielgruppe"])
+            stripHtmlTagsFromString(angebot["zielgruppe"]),
+            angebot["bildungsart"]["bezeichnung"]
         ))
     db_connection.commit()
     print("insert data")
@@ -130,7 +133,7 @@ print(parameters.regions)
 
 # Pagination: Fetch all data from the API using multiple requests
 def pagination(api_url, access_token, db_connection, params, data_queue, page):
-    last_page = 10
+    last_page = 20
     params = params.copy()
     params["page"] = page
     api_data = get_api_data(api_url, access_token, params)
